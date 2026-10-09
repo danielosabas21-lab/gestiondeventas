@@ -17,6 +17,7 @@ REQUIRED = (
     "data/canonical.json",
     "data/audit.json",
     "data/locations.json",
+    "tools/rebuild_data.py",
 )
 FORBIDDEN_SUFFIXES = {".xlsx", ".xls", ".db", ".sqlite", ".sqlite3", ".pyc", ".pyo"}
 
@@ -25,6 +26,7 @@ def main() -> int:
     if not ARCHIVE.is_file():
         print(f"Falta {ARCHIVE.name} en la raíz del repositorio.", file=sys.stderr)
         return 2
+
     try:
         with zipfile.ZipFile(ARCHIVE) as archive:
             members = archive.infolist()
@@ -36,11 +38,14 @@ def main() -> int:
                     raise ValueError(f"Runtime/binarios no permitidos: {member.filename}")
                 if Path(member.filename).suffix.lower() in FORBIDDEN_SUFFIXES:
                     raise ValueError(f"Archivo de datos/binario no permitido: {member.filename}")
+
             DEST.mkdir(parents=True, exist_ok=True)
             archive.extractall(DEST)
+
         missing = [name for name in REQUIRED if not (DEST / name).is_file()]
         if missing:
             raise ValueError("Faltan archivos requeridos: " + ", ".join(missing))
+
         print(f"Paquete EMA validado: {len(members)} archivos.")
         return 0
     except (OSError, zipfile.BadZipFile, ValueError) as exc:
