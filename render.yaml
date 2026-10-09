@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: starter
     buildCommand: python prepare_app.py && pip install -r .deploy_src/requirements.txt
-    startCommand: python .deploy_src/web_server.py
+    startCommand: python .deploy_src/init_persistent_data.py && python .deploy_src/web_server.py
     healthCheckPath: /api/health
     autoDeployTrigger: commit
     disk:
