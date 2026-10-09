@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+*.db
+*.sqlite
+*.sqlite3
+*.xlsx
+*.xls
+data/
+.deploy_src/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
